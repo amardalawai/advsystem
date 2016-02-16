@@ -11,8 +11,12 @@
                 <h3 class="box-title">Post</h3>
             </div><!-- /.box-header -->
             <!-- form start -->
-            {!! Form::open(array('url' => 'savePost' ,'method' => 'POST','class'=>'form-horizontal','name'=>'FrmuserEdit','id'=>'FrmuserEdit','enctype'=>'multipart/form-data')) !!}
+            {!! Form::open(array('url' => 'savePost' ,'method' => 'POST','class'=>'form-horizontal','name'=>'frmAddPost','id'=>'frmAddPost','enctype'=>'multipart/form-data')) !!}
             <div class="box-body">
+				@if(Session::has('message'))
+				<p class="alert alert-success">{{ Session::get('message') }}</p>
+				@endif
+			
                 <div class="form-group {{ $errors->first('dept')? 'has-error':'' }}">
                     <label for="name" class="col-sm-3 control-label">Department/Category &nbsp;</label>
                     <div class="col-sm-9">
@@ -50,7 +54,7 @@
                 <div class="form-group {{ $errors->first('name')? 'has-error':'' }}" id='imgInput'>
                     <label for="name" class="col-sm-3 control-label">Image &nbsp;</label>
                     <div class="col-sm-9">
-                        {!! Form::file('image', array("class"=>"form-control","onchange"=>"loadFile(event)")) !!}
+                        {!! Form::file('image', array("class"=>"form-control","id"=>"image","onchange"=>"loadFile(event)")) !!}
                         {!! $errors->first('image', '<span class="text-danger">:message</span>') !!}  
                         <input type="hidden" id="x" name="x" />
                         <input type="hidden" id="y" name="y" />
@@ -63,7 +67,7 @@
                 <div class="form-group {{ $errors->first('audio')? 'has-error':'' }}" id='audInput'>
                     <label for="name" class="col-sm-3 control-label">Audio &nbsp;</label>
                     <div class="col-sm-9">
-                        {!! Form::file('audio', array("class"=>"form-control")) !!}
+                        {!! Form::file('audio', array("class"=>"form-control","id"=>"audio")) !!}
                         {!! $errors->first('audio', '<span class="text-danger">:message</span>') !!}  
                     </div>
                 </div>
@@ -71,7 +75,7 @@
                 <div class="form-group {{ $errors->first('video')? 'has-error':'' }}" id='vidInput'>
                     <label for="video" class="col-sm-3 control-label">Video &nbsp;</label>
                     <div class="col-sm-9">
-                        {!! Form::file('video', array("class"=>"form-control")) !!}
+                        {!! Form::file('video', array("class"=>"form-control","id"=>"video")) !!}
                         {!! $errors->first('video', '<span class="text-danger">:message</span>') !!}  
                     </div>
                 </div>
@@ -81,6 +85,7 @@
                 <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save changes</button>
             </div><!-- /.box-footer -->
             {!! Form::close() !!}
+			
         </div><!-- /.box -->
 
     </div>
@@ -88,8 +93,6 @@
 @stop
 
 @section('include_js')
-<script type="text/javascript" src="{{ URL::asset('plugins/custom/userEdit.js') }}"></script>   
-
 <script>
 function setType(val){
     if(val==0){
@@ -121,5 +124,38 @@ function setType(val){
 $(document).ready(function(){
     setType(0);
 });
+
+$('#video').bind('change', function() {
+	if(this.files[0].size>15000000){
+		alert("Please choose video less then 15MB");
+		document.frmAddPost.reset();
+	}
+});
+
+$('#image').bind('change', function() {
+	if(this.files[0].size>5000000){
+		alert("Please choose image less then 5MB");
+		document.frmAddPost.reset();
+	}
+});
+
+$('#audio').bind('change', function() {
+	if(this.files[0].size>10000000){
+		alert("Please choose audio less then 10MB");
+		document.frmAddPost.reset();
+	}
+});
+
+var loadFile = function (event) {
+    var image_url = URL.createObjectURL(event.target.files[0]);
+    var strImage = image_url;
+    if (strImage != '') {
+        $.post(base_url + "/imageCrop", {strImage: strImage, strSquare: '0'}, function (result) {
+            $('#commonTitle').html('Crop area of image');
+            $('#commonBody').html(result);
+        });
+        $('#commonBox').modal('show');
+    }
+};
 </script>
 @stop

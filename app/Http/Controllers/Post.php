@@ -32,18 +32,20 @@ class Post extends Controller {
     }
 
     public function savePost(Request $request) {
-
+		
         $input = Input::except('_token', 'image', 'x', 'y', 'w', 'h', 'old_image');
         $update = new Posts;
         foreach ($input as $key => $value) {
             $update->$key = $value;
         }
+		$update->user_id = Auth::user()->id;
         $update->save();
         $inserted_id = $update->id;
         
         $image = Input::file('image');
+		
         if (!empty($image)) {
-
+			
             $filename = time() . '.' . $image->getClientOriginalExtension();
             $path = public_path('post_images/' . $filename);
 
@@ -53,13 +55,13 @@ class Post extends Controller {
             $image_height = $request->h;
             $old_image = $request->old_image;
 
-            Image::make($image->getRealPath())->crop($image_width, $image_height, $image_x, $image_y)->resize(250, 250)->save($path);
+            Image::make($image->getRealPath())->crop($image_width, $image_height, $image_x, $image_y)->resize(640, 360)->save($path);
 
             File::delete($old_image);
 
-            $update = Posts::find($inserted_id);
-            $update->image = $filename;
-            $update->save();
+            $imgUpdate = Posts::find($inserted_id);
+            $imgUpdate->image = $filename;
+            $imgUpdate->save();
         }
 
 
@@ -89,7 +91,31 @@ class Post extends Controller {
             $update->save();
         }
 
-        return Redirect::back();
+        return Redirect::back()->with('message', 'Posted Successfully');
     }
+	
+	public function managePost(){
+		$user_id =Auth::user()->id;
+		if($user_id==1){
+			$arrPost = Posts::all();
+		}
+		else{
+			$arrPost = Posts::where('user_id','=',$user_id)->get();
+		}
+		return view('pages.managePost', array('arrPost' => $arrPost));
+	}
 
+	public function processSetStatus(Request $request) {
+		$intPostId = $request->intPostId;
+		$intStatusId = $request->intStatusId;
+		$Post = Posts::find($intPostId);
+		$Post->active = $intStatusId;
+		echo $Post->save();
+	}
+	
+	public function processDeletePost(Request $request){
+		$intPostId = $request->intPostId;
+		$Post = Posts::find($intPostId);
+		echo $Post->delete();
+	}
 }

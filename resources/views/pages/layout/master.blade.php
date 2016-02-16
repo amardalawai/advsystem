@@ -123,8 +123,14 @@
                     <ul class="sidebar-menu">
                         <li class="header">MAIN NAVIGATION</li>
                         <li><a href="{{ url("home") }}"><i class="fa fa-home"></i> <span>Home</span></a></li>
+						<li><a href="{{ url("addPost") }}"><i class="fa fa-plus"></i> <span>Add Post</span></a></li>
+						<li><a href="{{ url("managePost") }}"><i class="fa fa-list"></i> <span>Manage Post</span></a></li>
+						@if(Auth::user()->id==1)
                         <li><a href="{{ url("users") }}"><i class="fa fa-users"></i> <span>Manage Users</span></a></li>
-                        <li><a href="{{ url("addPost") }}"><i class="fa fa-plus"></i> <span>Add Post</span></a></li>
+						
+						@endif
+                        <li><a href="{{ url("auth/logout") }}"><i class="fa fa-sign-out"></i> <span>Logout</span></a></li>
+						
                        
                     </ul>
                 </section>

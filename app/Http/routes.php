@@ -72,5 +72,17 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/savePost', [
         'as' => 'savePost', 'uses' => 'Post@savePost'
     ]);
+
+    Route::get('/managePost', [
+        'as' => 'managePost', 'uses' => 'Post@managePost'
+    ]);
+
+    Route::post('/processSetStatus', [
+        'as' => 'processSetStatus', 'uses' => 'Post@processSetStatus'
+    ]);
+
+    Route::post('/processDeletePost', [
+        'as' => 'processDeletePost', 'uses' => 'Post@processDeletePost'
+    ]);
 });
 

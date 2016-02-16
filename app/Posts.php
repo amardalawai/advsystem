@@ -26,6 +26,27 @@ class Posts extends Model {
         }
         return $url;
     }
+	
+	public function audio() {
+        $audio = $this->audio;
+        if (File::exists('post_audios/' . $audio) && !empty($audio)) {
+            $url = url('post_audios/' . $this->audio);
+        } else {
+            $url = '';
+        }
+        return $url;
+    }
+	
+	public function video() {
+        $video = $this->video;
+        if (File::exists('post_videos/' . $video) && !empty($video)) {
+            $url = url('post_videos/' . $this->video);
+        } else {
+            $url = '';
+        }
+        return $url;
+    }
+	
 
     public function user() {
         return $this->hasOne('App\User', 'id', 'added_by');
