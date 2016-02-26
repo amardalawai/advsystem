@@ -16,6 +16,15 @@ class Posts extends Model {
     public function postTitle() {
         return ucfirst($this->name);
     }
+	
+	public function expired() {
+		if(time()<$this->expdate){
+			return FALSE;
+		}
+		else{
+			return TRUE;
+		}
+    }
 
     public function postImage() {
         $image = $this->image;
@@ -49,6 +58,10 @@ class Posts extends Model {
 	
 
     public function user() {
-        return $this->hasOne('App\User', 'id', 'added_by');
+        return $this->hasOne('App\User', 'id', 'user_id');
+    }
+	
+	public function deptName() {
+        return $this->hasOne('App\Departments', 'id', 'dept');
     }
 }

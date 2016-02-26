@@ -36,7 +36,12 @@ class Post extends Controller {
         $input = Input::except('_token', 'image', 'x', 'y', 'w', 'h', 'old_image');
         $update = new Posts;
         foreach ($input as $key => $value) {
-            $update->$key = $value;
+            if(!empty($key) && $key=='expdate'){
+				$update->$key =  strtotime($value);
+			}
+			else{
+				$update->$key = $value;
+			}
         }
 		$update->user_id = Auth::user()->id;
         $update->save();
@@ -118,4 +123,15 @@ class Post extends Controller {
 		$Post = Posts::find($intPostId);
 		echo $Post->delete();
 	}
+	
+	public function processUpdateExpire(Request $request){
+		$intPostId = $request->intPostId;
+		$strExpDate = $request->strExpDate;
+		$strExpDate = strtotime($strExpDate);
+		
+		$Post = Posts::find($intPostId);
+		$Post->expdate = $strExpDate;
+		echo $Post->save();
+	}
+	
 }

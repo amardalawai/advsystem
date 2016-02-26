@@ -28,7 +28,7 @@
                 <div class="form-group {{ $errors->first('title')? 'has-error':'' }}">
                     <label for="title" class="col-sm-3 control-label">Title <span class="text-danger">*</span></label>
                     <div class="col-sm-9">
-                        {!! Form::text('title',Input::old('title',''), array("class"=>"form-control", "placeholder"=>"Post title")) !!}
+                        {!! Form::text('title',Input::old('title',''), array("class"=>"form-control","id"=>"title", "placeholder"=>"Post title")) !!}
                         {!! $errors->first('title', '<span class="text-danger">:message</span>') !!}  
                     </div>
                 </div>
@@ -80,9 +80,16 @@
                     </div>
                 </div>
 
+				<div class="form-group {{ $errors->first('title')? 'has-error':'' }}">
+                    <label for="expdate" class="col-sm-3 control-label">Expire Date <span class="text-danger">*</span></label>
+                    <div class="col-sm-9">
+						<input type="date" name="expdate" id="expdate" class="form-control" value="{{ Input::old('expdate','') }}"/>
+                        {!! $errors->first('expdate', '<span class="text-danger">:message</span>') !!}  
+                    </div>
+                </div>
             </div><!-- /.box-body -->
             <div class="box-footer">
-                <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-save"></i> Save changes</button>
+                <button type="button" class="btn btn-primary pull-right" onclick="savePost()"><i class="fa fa-save"></i> Save changes</button>
             </div><!-- /.box-footer -->
             {!! Form::close() !!}
 			
@@ -94,6 +101,22 @@
 
 @section('include_js')
 <script>
+function savePost(){
+	var title = $('#title').val();
+	var expdate = $('#expdate').val();
+	
+	if(!title){
+		show_warning("Please provide post title");
+	}
+	else if(!expdate){
+		show_warning("Please provide post expire date");
+	}
+	else{
+		document.frmAddPost.submit();
+	}
+	
+}
+
 function setType(val){
     if(val==0){
         $('#desInput').show();
@@ -147,15 +170,17 @@ $('#audio').bind('change', function() {
 });
 
 var loadFile = function (event) {
-    var image_url = URL.createObjectURL(event.target.files[0]);
-    var strImage = image_url;
-    if (strImage != '') {
-        $.post(base_url + "/imageCrop", {strImage: strImage, strSquare: '0'}, function (result) {
-            $('#commonTitle').html('Crop area of image');
-            $('#commonBody').html(result);
-        });
-        $('#commonBox').modal('show');
-    }
+	if(event.target.files[0].size<5000000){
+		var image_url = URL.createObjectURL(event.target.files[0]);
+		var strImage = image_url;
+		if (strImage != '') {
+			$.post(base_url + "/imageCrop", {strImage: strImage, strSquare: '0'}, function (result) {
+				$('#commonTitle').html('Crop area of image');
+				$('#commonBody').html(result);
+			});
+			$('#commonBox').modal('show');
+		}
+	}
 };
 </script>
 @stop

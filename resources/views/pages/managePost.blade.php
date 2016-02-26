@@ -4,18 +4,19 @@
 @section('content')
 @parent
 
+
 <table id="tblPost" class="table">
     <thead>
         <tr>
             <th>Manage Post</th>
-            <th>Status</th>
-            <th>Action</th>
+            <th>Expire Date</th>
+            <th>Approve/Delete</th>
         </tr>
     </thead>
     <tbody>
         @foreach($arrPost as $post)
         <tr id="post_{{$post->id}}">
-            <td>
+            <td style="max-width:400px">
                 <div class="card card-block">
                     <h4 class="card-title"><?php echo $post->title ?></h4>
                     <p class="card-text"><?php echo $post->description ?></p>
@@ -39,26 +40,42 @@
                         </p>
                     </video>
                     @endif
-                    <p class="card-text"><small class="text-muted"> Posted on <?php echo date('d-M-y h:i a', strtotime($post->created_at)); ?></small></p>
+					
+                    <p class="card-text"><small class="text-muted"> Posted By <b><?php echo $post->user->userName(); ?></b></small></p>
+                    <p class="card-text"><small class="text-muted"> Posted on <b><?php echo date('d-M-y h:i a', strtotime($post->created_at)); ?> | <?php  echo $post->deptName->name; ?></b></small> </p>
                 </div>
             </td>
-            <td id="status_{{$post->id}}"><?php echo($post->active == 0) ? '<label class="label label-danger">In-Active</label>' : '<label class="label label-success">Active</label>' ?></td>
             <td>
+				<div id="labExpDate_{{$post->id}}"><?php echo ($post->expired())?'<label class="label label-danger">Expired</label><br><br>':''; ?></div>
+				<input type="date" name="strExpDate_{{$post->id}}" id="strExpDate_{{$post->id}}" class="form-control" onchange="setExpDate(this.value,{{$post->id}});"/>
+				<br>
+				<br>
+				<div id="labExpDateTime_{{$post->id}}"><?php echo date('Y-m-d h:i a', ($post->expdate)); ?></div>
+				
+				
+			</td>
+			<td>
+				
+				<div id="status_{{$post->id}}"><?php echo($post->active == 0) ? '<label class="label label-danger">In-Active</label>' : '<label class="label label-success">Active</label>' ?></div>
                 @if(Auth::user()->id==1)
+				<br>
                 <select class="form-control" onchange="setStatus(this.value,{{$post->id}})">	
                     <option value="">--Choose--</option>
                     <option value="1">Active</option>
                     <option value="0">In-Active</option>
                 </select>
-
+				<br><br>
                 @endif
 
-                <button class="btn btn-danger pull-right" onclick="deletePost({{$post->id}});"><i class="fa fa-trash-o"></i> Delete</button>
+                <button class="btn btn-danger" onclick="deletePost({{$post->id}});"><i class="fa fa-trash-o"></i> Delete</button>
             </td>
         </tr>
+		
+		
         @endforeach
     </tbody>
 </table>
+
 @stop
 
 @section('include_js')
@@ -87,6 +104,25 @@
     });
     }
     }
+	
+	function setExpDate(strExpDate,intPostId){ 
+		var r = confirm('Are you sure want to update this post until '+strExpDate);
+		if(r){
+			$.post('processUpdateExpire', {intPostId:intPostId, strExpDate: strExpDate}, function(result){
+				if(result){
+					$('#labExpDate_'+intPostId).html('');
+					$('#strExpDate_'+intPostId).val('');
+					$('#labExpDateTime_'+intPostId).html(strExpDate+' 12:00 am');
+					show_success('Post expire date updated successfully.');
+				}
+			});
+			
+		}
+		else{
+			$('#strExpDate_'+intPostId).val('');
+			
+		}
+	}
 </script>
 
 @stop

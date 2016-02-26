@@ -20,6 +20,7 @@ Route::get('auth/google', 'Auth\AuthController@redirectToProvider');
 Route::get('auth/google/callback', 'Auth\AuthController@handleProviderCallback');
 
 Route::get('/', 'Home@home');
+Route::get('/new', 'Home@newUI');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');
@@ -53,14 +54,6 @@ Route::group(['middleware' => ['auth']], function() {
         'as' => 'updateProfile', 'uses' => 'Member@updateProfile'
     ]);
 
-    Route::get('/edit_recipe/{id}', [
-        'as' => 'edit_recipe', 'uses' => 'Recipe@editRecipe'
-    ]);
-
-    Route::post('/processEditRecipe', [
-        'as' => 'processEditRecipe', 'uses' => 'Recipe@processEditRecipe'
-    ]);
-
     Route::post('/imageCrop', [
         'as' => 'imageCrop', 'uses' => 'Member@viewImageCrop'
     ]);
@@ -84,5 +77,11 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/processDeletePost', [
         'as' => 'processDeletePost', 'uses' => 'Post@processDeletePost'
     ]);
+	
+	Route::post('/processUpdateExpire', [
+        'as' => 'processUpdateExpire', 'uses' => 'Post@processUpdateExpire'
+    ]);
+	
+	
 });
 

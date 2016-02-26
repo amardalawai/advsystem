@@ -9,6 +9,7 @@ use Auth;
 use App\User;
 use App\tbl_activities;
 use App\Departments;
+use App\Posts;
 
 class Home extends Controller {
 
@@ -20,6 +21,11 @@ class Home extends Controller {
     public function home() {
         $departments = Departments::all();
         return view('home')->with('departments', $departments);
+    }
+	
+	public function newUI() {
+        $posts = Posts::all();
+        return view('newUI')->with('posts', $posts);
     }
 
     public function index($userId = NULL) {

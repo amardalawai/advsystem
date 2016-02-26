@@ -10,6 +10,8 @@
         <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
         <link href="{{ url('assets/css/video-js.css') }}" rel="stylesheet">
         <link rel="stylesheet" href="{{ url('plugins/lightbox/css/lightbox.min.css') }}">
+		 <!-- Font Awesome -->
+        <link type="text/css" rel="stylesheet" href="{{ URL::asset('plugins/fontawesome/css/font-awesome.min.css') }}" />
         <style>
             *{
                 border-radius:0px !important;
@@ -20,36 +22,26 @@
     <body>
 
         <nav class="navbar navbar-dark bg-faded bg-primary">
-            <a class="navbar-brand" href="#">AdvSystem</a>
-            <ul class="nav navbar-nav  pull-xs-right">
-                <li class="nav-item">
+            <a class="navbar-brand" href="#"><h4>AdvSystem</h4></a>
+            <ul class="nav navbar-nav pull-xs-right">
+				<li class="nav-item">
                     <a href="{{url('auth/login')}}" class="btn btn-secondary-outline">Login</a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item">
                     <a href="{{url('auth/register')}}" class="btn btn-secondary-outline">Sign Up</a>
                 </li>
             </ul>
-
+			<div class="row">
+				<div class="col-md-4">
+					<input id="search-headers" class="form-control" name="search" placeholder="Search keyword" type="text" data-list=".headers_list" data-nodata="No results found">
+				</div>
+			</div>
         </nav>
-        <br>
+       
         <div class="container-fluid">
-            <!-- Nav tabs -->
-            <ul class="nav nav-tabs" role="tablist">
-
-                <?php foreach ($departments as $key => $dept) { ?>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo ($key == 0) ? 'active' : '' ?>" data-toggle="tab" href="#tab_<?php echo $key ?>" role="tab"><?php echo $dept['name']; ?></a>
-                    </li>
-                <?php } ?>
-
-            </ul>
-
-            <!-- Tab panes -->
-            <div class="tab-content"><br>
-                <?php foreach ($departments as $key => $dept) { ?>
-                    <div class="tab-pane <?php echo ($key == 0) ? 'active' : '' ?>" id="tab_<?php echo $key ?>" role="tabpanel">
-                        <div class="card-columns">
-                            @foreach($dept->Post as $post)
+			<br>
+            <div class="card-columns  headers_list">
+                            @foreach($posts as $post)
                             @if($post->active==1 && !$post->expired())
 
 
@@ -95,9 +87,9 @@
                                 </video>
                                 @endif
 								
-								<blockquote>
-									<?php echo $post->user->userName(); ?><br>
-									<small class="text-muted"> Posted on <?php echo date('d-M-y h:i a', strtotime($post->created_at)); ?>  | <?php  echo $post->deptName->name; ?></small>
+								<blockquote style="margin:0px">
+									<i class="fa fa-user"></i> <?php echo $post->user->userName(); ?><br>
+									<i class="fa fa-clock-o"></i> <small class="text-muted"> Posted on <?php echo date('d-M-y h:i a', strtotime($post->created_at)); ?>  | <?php  echo $post->deptName->name; ?></small>
 								</blockquote>
                                 
                             </div>
@@ -105,14 +97,11 @@
                             @endforeach
 
                         </div>  
-                    </div>
-                <?php } ?>
-            </div>
         </div>
 
 
 
-        <nav class="navbar navbar-dark  bg-faded bg-primary">
+        <nav class="navbar navbar-dark bg-faded bg-primary">
             <a class="navbar-brand" href="#"><small>AdvSystem &copy 2016, All rights received</small></a>
         </nav>
 
@@ -123,5 +112,14 @@
         <script src="{{ url('assets/js/bootstrap.min.js') }}" integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7" crossorigin="anonymous"></script>
         <script src="{{ url('assets/js/video.js') }}"></script>
         <script src="{{ url('plugins/lightbox/js/lightbox-plus-jquery.min.js') }}"></script>
+		 <script type="text/javascript" src="{{ url('assets/js/jquery.hideseek.min.js') }}"></script>
+		<script>
+			$(document).ready(function() {
+				$('#search-headers').hideseek({
+				  nodata: 'No results found',
+				  navigation: true
+				});
+			});
+		</script>
     </body>
 </html>

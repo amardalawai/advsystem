@@ -15,4 +15,5 @@ class Departments extends Model {
     public function Post() {
         return $this->hasMany('App\Posts', 'dept', 'id');
     }
+	
 }

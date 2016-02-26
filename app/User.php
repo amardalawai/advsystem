@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use App\tbl_recipes;
+use App\Posts;
 use File;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
@@ -66,7 +66,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     public function post() {
-        return $this->belongsTo('App\Post', 'added_by', 'id');
+        return $this->belongsTo('App\Posts', 'user_id', 'id');
     }
 
     public function country() {
