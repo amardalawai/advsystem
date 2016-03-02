@@ -20,7 +20,7 @@ Route::get('auth/google', 'Auth\AuthController@redirectToProvider');
 Route::get('auth/google/callback', 'Auth\AuthController@handleProviderCallback');
 
 Route::get('/', 'Home@home');
-Route::get('/new', 'Home@newUI');
+Route::get('/new', 'Home@home');
 
 // Authentication routes...
 Route::get('auth/login', 'Auth\AuthController@getLogin');

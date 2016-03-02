@@ -18,14 +18,29 @@ class Home extends Controller {
      *
      * @return Response
      */
-    public function home() {
+    public function homeOld() {
         $departments = Departments::all();
         return view('home')->with('departments', $departments);
     }
-	
-	public function newUI() {
+
+    public function home() {
         $posts = Posts::all();
-        return view('newUI')->with('posts', $posts);
+
+        $allTxt = array();
+        $i = 0;
+        foreach ($posts as $post) {
+            if ($post->active == 1 && !$post->expired() && $post->type == 0 && empty($post->image)) {
+                $allTxt[$i] = array(
+                    'title' => $post->title,
+                    'description' => $post->description,
+                    'uname' => $post->user->userName(),
+                    'dateon' => date('d-M-y h:i a', strtotime($post->created_at)),
+                    'deptname' => $post->deptName->name,
+                );
+                $i++;
+            }
+        }
+        return view('newUI')->with('posts', $posts)->with('allTxt', $allTxt);
     }
 
     public function index($userId = NULL) {
